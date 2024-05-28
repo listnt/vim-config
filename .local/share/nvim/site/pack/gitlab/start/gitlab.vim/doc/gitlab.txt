@@ -1,0 +1,145 @@
+*gitlab.vim*
+
+*gitlab.txt*                      GitLab functionality inside of Neovim.
+
+CONTENTS                                        *gitlab-contents*
+Introduction                                    |gitlab-introduction|
+Usage                                           |gitlab-usage|
+  Code Suggestions                              |gitlab-code-suggestions|
+  Resource Editing                              |gitlab-resource-editing|
+  Commands                                      |gitlab-commands|
+  Options                                       |gitlab-options|
+API                                             |gitlab-api|
+ENV                                             |gitlab-env|
+
+                                      Type |gO| to see the table of contents.
+
+==============================================================================
+INTRODUCTION                                             *gitlab-introduction*
+
+`gitlab.vim` integrates GitLab functionality into Neovim.
+
+==============================================================================
+USAGE                                                           *gitlab-usage*
+
+Use |gitlab.setup()| to configure `gitlab.vim`.
+
+                                                     *gitlab-code-suggestions*
+
+`gitlab.vim` includes functions to configure the builtin Neovim |lsp| client
+configuration to use the GitLab Duo Code Suggestions language server.
+
+                                                     *gitlab-resource-editing*
+
+View and edit Issue, Merge Request, and Epics using `:edit RESOURCE_URL`:
+
+Example: >lua
+
+    :edit https://gitlab.com/gitlab-org/gitlab/-/issues/1
+    :edit https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1
+    :edit https://gitlab.com/groups/gitlab-org/a-subgroup/-/epics/1
+<
+
+                                                           *gitlab-statusline*
+
+`gitlab.vim` includes a statusline showing the status of
+|gitlab-code-suggestions|.
+
+==============================================================================
+COMMANDS                                                     *gitlab-commands*
+
+GitLabCodeSuggestionsInstallLanguageServer                *GitLabCodeSuggestionsInstallLanguageServer*
+
+                                                     *gitlab-language-server*
+    1. Install the GitLab Code Suggestions language server experiment
+       available at:
+       https://gitlab.com/gitlab-org/editor-extensions/experiments/gitlab-code-suggestions-language-server-experiment
+    4. Start an LSP client automatically for supported filetypes binding
+       |'omnifunc'| with the builtin Neovim LSP client.
+
+GitLabConfigure                                   *GitLabConfigure*
+    Configure the language server and Omni completion GitLab Duo
+    Code Suggestions.
+
+    1. Prompt for GitLab instance URL.
+    2. Prompt for a personal access token (PAT) with the `api` scope.
+    3. Register the provided PAT with the local language server.
+
+
+GitLabCodeSuggestionsStart                        *GitLabCodeSuggestionsStart*
+
+    Sugar to invoke |gitlab.code_suggestions.start()|.
+
+GitLabCodeSuggestionsStop                          *GitLabCodeSuggestionsStop*
+
+    Sugar to invoke |gitlab.code_suggestions.stop()|.
+
+==============================================================================
+OPTIONS                                                       *gitlab-options*
+
+vim.g.gitlab_plugin_loaded                        *vim.g.gitlab_plugin_loaded*
+
+Skips plugin execution if true preventing re-running setup functions.
+
+==============================================================================
+API                                                               *gitlab-api*
+
+`gitlab.vim` provides the following public Lua API:
+
+==============================================================================
+Lua module: gitlab                                                    *gitlab*
+
+gitlab.setup({options})                                       *gitlab.setup()*
+
+    Invokes setup on nested GitLab plugin modules passing through their
+    relevant options.
+
+    Example: >lua
+
+    require('gitlab').setup({
+      code_suggestions = {
+        auto_filetypes = {'ruby'},
+      },
+      resource_editing = {
+        enabled = true,
+      },
+      statusline = {
+        enabled = false,
+      },
+    })
+<
+
+    Parameters: ~
+      • {options} (table) Optional keyword arguments:
+                  • code_suggestions (table)    *gitlab.config.code_suggestions*
+                    Suggestions.
+                  • gitlab_url (string) the GitLab instance url to use
+                    if not `https://gitlab.com`.
+                  • resource_editing (table)          *gitlab.config.resource_editing*
+                    • enabled (boolean) Whether to enable support for editing
+                      GitLab URLs.
+                  • statusline (table)          *gitlab.config.statusline*
+                    • enabled (boolean) Whether to enable the statusline.
+
+    Parameters: ~
+      • {options} (table) Optional keyword arguments:
+                  • enabled (boolean) replaces |statusline| with the
+                  |gitlab-statusline|.
+
+
+==============================================================================
+ENV                                                               *gitlab-env*
+
+Environment variables 
+
+GITLAB_TOKEN                                                *GITLAB_TOKEN*
+
+The default GitLab Personal Access Token to use for authenticated requests.
+If provided, interactive authentication will be skipped.
+
+GITLAB_VIM_URL                                                *GITLAB_VIM_URL*
+
+Override the GitLab instance to connect with (defaults to
+`https://gitlab.com`).
+
+vim:tw=78:ts=8:ft=help:norl:

@@ -1,0 +1,1 @@
+{"name":"gci","secondary_sources":[],"metrics":{"start_time":1716870005189,"completion_time":1716870021684},"schema_version":"1.1","links":{"bin":{"gci":"gci"},"opt":{},"share":{}},"primary_source":{"id":"pkg:golang\/github.com\/daixiang0\/gci@v0.13.4","type":"registry+v1"}}

@@ -1,0 +1,34 @@
+# {{{Required Approvals
+
+# Require at least one approval from a Code Owner by default:
+* @gitlab-org/editor-extensions/team @ashmckenzie @DylanGriffith
+
+# Relax the Code Owner requirement for docs:
+/doc/*.txt
+/**/*.md
+
+[Maintainer (Lua)] @erran @ashmckenzie @DylanGriffith
+**/*.lua
+
+[Maintainer (Vimscript)] @erran @ashmckenzie @DylanGriffith
+**/*.vim
+
+[Technical Writing] @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+.markdownlint-cli2.yml
+/docs/.vale/
+.vale.ini
+
+[Tests] @ashmckenzie @erran @jay_mccure @DylanGriffith
+docker/
+spec/
+
+# }}}
+
+# {{{Optional Approvals
+
+^[Documentation] @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+/doc/*.txt
+/docs/**/*
+/**/*.md
+
+# }}}

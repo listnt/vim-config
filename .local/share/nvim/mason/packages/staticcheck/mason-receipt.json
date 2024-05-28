@@ -1,0 +1,1 @@
+{"name":"staticcheck","secondary_sources":[],"metrics":{"start_time":1716869943836,"completion_time":1716869945006},"schema_version":"1.1","links":{"bin":{"staticcheck":"staticcheck"},"opt":{},"share":{}},"primary_source":{"id":"pkg:golang\/honnef.co\/go\/tools@v0.4.7#cmd\/staticcheck","type":"registry+v1"}}

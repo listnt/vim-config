@@ -1,0 +1,72 @@
+stages:
+  - lint
+  - test
+  - package
+  - release
+
+include:
+  - project: 'gitlab-org/security-products/ci-templates'
+    ref: 'master'
+    file: '/includes-dev/upsert-git-tag.yml'
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - local: /.gitlab/ci_templates/docker.yml
+
+default:
+  image: alpine:3.18
+
+check_docs_markdown:
+  stage: lint
+  image: registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.19-vale-3.0.7-markdownlint-0.39.0-markdownlint2-0.12.1
+  script:
+    # Lint prose
+    - vale --minAlertLevel error docs README.md CONTRIBUTING.md CHANGELOG.md
+    # Lint Markdown
+    - markdownlint-cli2 'docs/**/*.md' *.md
+
+test:
+  before_script:
+    - apk add git make neovim
+  script:
+    - make test
+  stage: test
+
+integration_test:
+  before_script:
+    - apk add curl git make neovim nodejs npm
+  script:
+    - make integration_test
+  services:
+    - alias: snowplow-micro
+      # TODO: Set name to snowplow/snowplow-micro:latest once it includes 'EXPOSE 9090/tcp'.
+      name: registry.gitlab.com/gitlab-org/editor-extensions/gitlab.vim/snowplow-micro:latest
+      variables:
+        MICRO_IGLU_REGISTRY_URL: https://gitlab-org.gitlab.io/iglu
+  stage: test
+  variables:
+    GITLAB_TOKEN: $GITLAB_PERSONAL_ACCESS_TOKEN
+    SNOWPLOW_MICRO_URL: http://snowplow-micro:9090
+
+lint:
+  script:
+    - apk add make luacheck stylua
+    - make lint
+  stage: lint
+
+lint gitlab-lsp dependencies:
+  before_script:
+    - apk add bash git make nodejs npm
+  script:
+    - make lint-lsp-deps
+  stage: lint
+
+upsert git tag:
+  # Limit job execution to authorized users.
+  environment:
+    name: production
+    url: https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/releases/$CI_COMMIT_REF_SLUG
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  stage: release
