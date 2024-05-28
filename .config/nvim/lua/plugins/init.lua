@@ -71,7 +71,7 @@ return {
 }
     end,
     lazy=false,
-  }
+  },
   {
   	"nvim-treesitter/nvim-treesitter",
   	opts = {
