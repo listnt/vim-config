@@ -53,7 +53,6 @@ return {
     end,
     lazy=false,
   },
-  
   {
   	"williamboman/mason.nvim",
   	opts = {
@@ -64,7 +63,15 @@ return {
   	},
     lazy=false,
   },
-  
+  {
+    "wedluffy/hologram.nvim",
+    config = function()
+      require('hologram').setup{
+    auto_display = true -- WIP automatic markdown image display, may be prone to breaking
+}
+    end,
+    lazy=false,
+  }
   {
   	"nvim-treesitter/nvim-treesitter",
   	opts = {
